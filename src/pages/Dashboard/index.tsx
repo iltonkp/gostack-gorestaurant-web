@@ -94,6 +94,32 @@ const Dashboard: React.FC = () => {
     setEditModalOpen(true);
   }
 
+  async function handleEditAvailable(
+    food: IFoodPlate,
+    available: boolean,
+  ): Promise<void> {
+    const { name, description, price, image } = food;
+
+    const updatedFood = await api.put(`/foods/${food.id}`, {
+      name,
+      description,
+      price,
+      image,
+      available,
+    });
+
+    console.log(updatedFood.data);
+
+    const updatedFoods = foods.map(foodIndex => {
+      if (foodIndex.id === updatedFood.data.id) {
+        return updatedFood.data;
+      }
+      return foodIndex;
+    });
+
+    setFoods(updatedFoods);
+  }
+
   return (
     <>
       <Header openModal={toggleModal} />
@@ -117,6 +143,7 @@ const Dashboard: React.FC = () => {
               food={food}
               handleDelete={handleDeleteFood}
               handleEditFood={handleEditFood}
+              handleEditAvailable={handleEditAvailable}
             />
           ))}
       </FoodsContainer>
